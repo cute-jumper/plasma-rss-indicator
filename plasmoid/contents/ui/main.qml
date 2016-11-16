@@ -9,6 +9,8 @@ Item {
     id: root
     property int iconSize: units.iconSizes.smallMedium
     property int leftColumnWidth: iconSize + Math.round(units.gridUnit / 2)
+    property string appletIcon: "rssindicator.png"
+
     /* Plasmoid.compactRepresentation: CompactRepresentation { } */
     Plasmoid.fullRepresentation: FullRepresentation { }
 }

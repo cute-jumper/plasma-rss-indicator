@@ -24,9 +24,9 @@ Item {
             minimumValue: 1
             maximumValue: 1800
             
-        }
+       }
        Text {
-           text: "URLs"
+           text: "URLs (one per line)"
            Layout.alignment: Qt.AlignTop
        }
        TextArea {

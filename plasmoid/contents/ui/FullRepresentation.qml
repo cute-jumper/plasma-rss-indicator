@@ -54,6 +54,7 @@ Item {
 
     PlasmaExtras.ScrollArea {
         id: rssSourceScroll
+
         anchors {
             top: heading.bottom
             left: parent.left
@@ -68,10 +69,73 @@ Item {
             id: rssSourceList
             anchors.fill: parent
             clip: true
-            model: 3
+            model: ListModel {
+                id: rssSourceModel
+            }
             delegate: rssSourceDelegate
             snapMode: ListView.SnapToItem
+            Component.onCompleted: {
+                for (var i = 0; i < urls.length; i++) {
+                    console.log("[ListView onCompleted] " + getFaviconUrl(urls[i]));
+                    console.log("[ListView onCompleted]: " + urls[i]);
+                    var feed = new XMLHttpRequest();
+                    feed.onreadystatechange = function () {
+                        if (feed.readyState == XMLHttpRequest.DONE) {
+                            getFeedTitle(feed.responseXML.documentElement);
+                            var a = feed.responseXML.documentElement;
+                            for (var ii = 0; ii < a.childNodes.length; ++ii) {
+                                /* console.log(a.childNodes[ii].nodeName); */
+                            }
+                        }
+                    }
+                    feed.open("GET", urls[i]);
+                    feed.send();
+                    rssSourceModel.append({imageSource: getFaviconUrl(urls[i]),
+                                           rssUrl: urls[i]
+                                          });
+                }
+            }
         }
+    }
+    function getBaseUrl(url) {
+        console.log("[getBaseUrl] " + url);
+        if (!url.match("^http")) {
+            url = "http://" + url;
+        }
+        var regex = new RegExp('^(https?://[^/?#]*).*');
+        var m = url.match(regex);
+        if (typeof m[1])
+            return m[1];
+        return null;
+    }
+
+    function getFaviconUrl(url) {
+         return getBaseUrl(url) + "/favicon.ico";
+    }
+
+    function getFeedTitle(xml) {
+        var node = xml;
+        var stop = false;
+        for (var i = 0; i < node.childNodes.length; i++) {
+            if (node.childNodes[i].tagName == "channel") {
+                node = xml.childNodes[i];
+                break;
+            }
+        }
+        console.log(node.childNodes.length);
+        for (var i = 0; i < node.childNodes.length; i++) {
+            /* console.log(node.childNodes[i].tagName); */
+            if (node.childNodes[i].tagName == "title") {
+                console.log("yes!" + node.childNodes[i].firstChild.nodeValue);
+                return node.childNodes[i].firstChild.nodeValue;
+            }
+        }
+    }
+
+    property variant urls
+
+    Component.onCompleted: {
+        urls = plasmoid.configuration.urls.split('\n');
     }
 
     StackView {
@@ -138,13 +202,36 @@ Item {
 
             height: root.iconSize + Math.round(units.gridUnit / 2)
 
+            XmlListModel {
+                id: rssDetailsModel
+                query: "/rss/channel/item"
+                source: "https://dot.kde.org/rss.xml"
+
+                XmlRole { name: "title"; query: "title/string()" }
+                XmlRole { name: "pubDate"; query: "pubDate/string()" }
+                XmlRole { name: "description"; query: "description/string()" }
+                XmlRole { name: "link"; query: "link/string()" }
+
+                onStatusChanged: {
+                    if (status == XmlListModel.Ready) {
+                        console.log("title: " + rssDetailsModel.get(0).title);
+                    }
+                }
+            }
+
             Image {
                 id: rssSourceIcon
                 width: root.iconSize
                 height: width
                 anchors.left: parent.left
                 fillMode: Image.PreserveAspectCrop
-                source: "http://www.ycombinator.com/images/ycombinator-logo-fb889e2e.png"
+                source: imageSource
+
+                onStatusChanged: {
+                    if (status == Image.Error) {
+                        source = root.appletIcon;
+                    }
+                }
             }
 
             PlasmaComponents.Label {
@@ -158,7 +245,7 @@ Item {
                 height: root.iconSize
                 elide: Text.ElideRight
                 font.weight: Font.Normal
-                text: "hackernews"
+                text: "TODO"
             }
 
             onClicked: {
