@@ -6,7 +6,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 Item {
     
     property alias cfg_refresh: refresh.value
-    property alias cfg_url: url.text
+    property alias cfg_urls: urls.text
 
     GridLayout {
        Layout.fillWidth: true
@@ -26,15 +26,14 @@ Item {
             
         }
        Text {
-           text: "URL"
+           text: "URLs"
+           Layout.alignment: Qt.AlignTop
        }
-       TextField {
+       TextArea {
            Layout.fillWidth: true
            Layout.minimumWidth: 400
-           id: url
-           placeholderText: qsTr("http://www.faz.net/rss/aktuell/")
+           id: urls
        }
-
     }
     
 }

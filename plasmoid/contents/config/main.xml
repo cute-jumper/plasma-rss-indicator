@@ -9,7 +9,7 @@
         <entry name="refresh" type="Int">
             <default>10</default>
         </entry>
-        <entry name="url" type="String">
+        <entry name="urls" type="String">
             <default>https://dot.kde.org/rss.xml</default>
         </entry>
     </group>
