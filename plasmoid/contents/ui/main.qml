@@ -8,6 +8,7 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 Item {
     id: root
     property int iconSize: units.iconSizes.smallMedium
+    property int leftColumnWidth: iconSize + Math.round(units.gridUnit / 2)
     /* Plasmoid.compactRepresentation: CompactRepresentation { } */
     Plasmoid.fullRepresentation: FullRepresentation { }
 }

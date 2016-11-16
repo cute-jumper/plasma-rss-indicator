@@ -10,8 +10,12 @@ import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
 
 Item {
     id: fullRep
+
+    property bool sourceClick: false
+
     Layout.minimumWidth: units.gridUnit * 12
     Layout.minimumHeight: units.gridUnit * 12
+
     PlasmaExtras.Heading {
         id: heading
         level: 1
@@ -27,34 +31,63 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: "RSS Indicator"
     }
+
+    PlasmaCore.SvgItem {
+        id: separator
+        anchors {
+            left: parent.left
+            leftMargin: root.leftColumnWidth
+            top: parent.top
+            bottom: parent.bottom
+        }
+
+        visible: false
+        width: lineSvg.elementSize("vertical-line").width
+
+        elementId: "vertical-line"
+
+        svg: PlasmaCore.Svg {
+            id: lineSvg;
+            imagePath: "widgets/line"
+        }
+    }
+
     PlasmaExtras.ScrollArea {
+        id: rssSourceScroll
         anchors {
             top: heading.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
         }
+        CurrentItemHighLight {
+            target: rssListPanel.activeRss
+            location: PlasmaCore.Types.LeftEdge
+        }
         ListView {
-            id: rssList
+            id: rssSourceList
             anchors.fill: parent
             clip: true
             model: 3
-            delegate: rssItemDelegate
+            delegate: rssSourceDelegate
             snapMode: ListView.SnapToItem
         }
     }
+
     StackView {
-        id: rssDetails
+        id: rssListPanel
 
         anchors {
             left: parent.left
-            top: heading.bottom
+            top: parent.top
             right: parent.right
             bottom: parent.bottom
-            leftMargin: root.iconSize + units.smallSpacing
+            leftMargin: root.leftColumnWidth
         }
 
         property Item activeRss
+
+        property Component currentComponent
 
         Item {
             id: emptyPage
@@ -62,24 +95,48 @@ Item {
 
         onActiveRssChanged: {
             if (activeRss != null) {
-
+                console.log("" + activeRss.currentIndex);
+                currentComponent = Qt.createComponent("RssList.qml");
+                rssListPanel.replace({item: currentComponent});
+            } else {
+                rssListPanel.replace({item: emptyPage, immediate: true});
             }
         }
-
-        Rectangle {
-            anchors.fill: parent
-            border.width: 2
+        delegate: StackViewDelegate {
+            function transitionFinished(properties) {
+                properties.exitItem.opacity = 1;
+            }
+            replaceTransition: StackViewTransition {
+                ParallelAnimation {
+                    PropertyAnimation {
+                        target: enterItem
+                        property: "x"
+                        from: enterItem.width
+                        to: 0
+                        duration: units.longDuration
+                    }
+                    PropertyAnimation {
+                        target: enterItem
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: units.longDuration
+                    }
+                }
+            }
         }
     }
     Component {
-        id: rssItemDelegate
+        id: rssSourceDelegate
         PlasmaComponents.ListItem {
             id: listItem
 
             enabled: true
-            checked: listItem.containsMouse
+            checked: listItem.containsMouse && !fullRep.sourceClick
 
-            height: rssSourceName.height + Math.round(units.gridUnit / 2)
+            property int currentIndex: index
+
+            height: root.iconSize + Math.round(units.gridUnit / 2)
 
             Image {
                 id: rssSourceIcon
@@ -103,11 +160,20 @@ Item {
                 font.weight: Font.Normal
                 text: "hackernews"
             }
-            property bool click: true
+
             onClicked: {
-                rssDetails
-                rssSourceName.font.weight = click ? Font.DemiBold : Font.Normal;
-                click = !click;
+                if (fullRep.sourceClick) {
+                    rssListPanel.activeRss = null;
+                    rssSourceScroll.anchors.rightMargin = 0;
+                    separator.visible = false;
+                    heading.visible = true;
+                } else {
+                    rssListPanel.activeRss = listItem;
+                    rssSourceScroll.anchors.rightMargin = rssListPanel.width;
+                    separator.visible = true;
+                    heading.visible = false;
+                }
+                fullRep.sourceClick = !fullRep.sourceClick;
             }
         }
     }
