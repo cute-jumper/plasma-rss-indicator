@@ -79,7 +79,7 @@ Item {
 
         anchors {
             left: parent.left
-            top: parent.top
+            top: heading.bottom
             right: parent.right
             bottom: parent.bottom
             leftMargin: root.leftColumnWidth
@@ -166,12 +166,12 @@ Item {
                     rssListPanel.activeRss = null;
                     rssSourceScroll.anchors.rightMargin = 0;
                     separator.visible = false;
-                    heading.visible = true;
+                    heading.text = "RSS Indicator"
                 } else {
                     rssListPanel.activeRss = listItem;
                     rssSourceScroll.anchors.rightMargin = rssListPanel.width;
                     separator.visible = true;
-                    heading.visible = false;
+                    heading.text = "Details"
                 }
                 fullRep.sourceClick = !fullRep.sourceClick;
             }

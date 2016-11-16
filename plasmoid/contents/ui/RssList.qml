@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 
@@ -9,11 +9,9 @@ Item {
             top: parent.top
             right: parent.right
             bottom: parent.bottom
-            leftMargin: root.leftColumnWidth
         }
         clip: true
         model: 10
-        header: rssListHeader
         delegate: PlasmaComponents.ListItem {
             id: rssItem
             enabled: true
@@ -27,17 +25,4 @@ Item {
         }
         snapMode: ListView.SnapToItem
     }
-    Component {
-        id: rssListHeader
-        PlasmaExtras.Heading {
-            id: heading
-            level: 1
-
-            height: paintedHeight
-
-            horizontalAlignment: Text.AlignHCenter
-            text: "Details"
-        }
-    }
-
 }
