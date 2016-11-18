@@ -125,7 +125,6 @@ Item {
     }
 
     property variant urls
-
     Component.onCompleted: {
         urls = plasmoid.configuration.urls.split('\n');
     }
@@ -143,7 +142,7 @@ Item {
 
         property Item activeRss
 
-        property Component currentComponent
+        property Item currentItem
 
         Item {
             id: emptyPage
@@ -151,9 +150,8 @@ Item {
 
         onActiveRssChanged: {
             if (activeRss != null) {
-                console.log("" + activeRss.currentIndex);
-                currentComponent = Qt.createComponent("RssList.qml");
-                rssListPanel.replace({item: currentComponent});
+                currentItem = activeRss.feedList;
+                rssListPanel.replace({item: currentItem});
             } else {
                 rssListPanel.replace({item: emptyPage, immediate: true});
             }
@@ -237,18 +235,45 @@ Item {
                 fullRep.sourceClick = !fullRep.sourceClick;
             }
 
+            property alias feedList: feedList
+            RssList {
+                id: feedList
+            }
+
+            XmlListModel {
+                id: feedListModel
+
+                query: "/rss/channel/item"
+
+                XmlRole { name: "title"; query: "title/string()" }
+                XmlRole { name: "pubDate"; query: "pubDate/string()" }
+                XmlRole { name: "description"; query: "description/string()" }
+                XmlRole { name: "link"; query: "link/string()" }
+
+                onStatusChanged: {
+                    if (status === XmlListModel.Error) {
+                    }
+                    if (status === XmlListModel.Ready) {
+                        feedList.model = feedListModel;
+                    }
+                }
+
+            }
+
             property variant info
+            property variant feeds
             Component.onCompleted: {
-                var feed = new XMLHttpRequest();
-                feed.onreadystatechange = function () {
-                    if (feed.readyState == XMLHttpRequest.DONE) {
-                        info = getFeedInfo(feed.responseXML.documentElement);
+                var req = new XMLHttpRequest();
+                req.onreadystatechange = function () {
+                    if (req.readyState == XMLHttpRequest.DONE) {
+                        info = getFeedInfo(req.responseXML.documentElement);
                         rssSourceName.text = info.title;
+                        feedListModel.xml = req.responseText;
                         console.log("info: " + JSON.stringify(info));
                     }
                 }
-                feed.open("GET", rssUrl);
-                feed.send();
+                req.open("GET", rssUrl);
+                req.send();
             }
         }
     }
