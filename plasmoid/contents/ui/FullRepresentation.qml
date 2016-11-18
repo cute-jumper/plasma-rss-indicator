@@ -222,8 +222,15 @@ Item {
             }
         );
     }
-    function makeFeedHeading(title, unread) {
-        return title + " (" + unread + ")"
+    function makeSourceName(title, unread, total) {
+        return title + " (" + unread + "/" + total + ")";
+    }
+
+
+    function setSourceNameText(title, unread, total) {
+        var item = rssListPanel.activeRss;
+        item.rssSourceNameText = heading.text = makeSourceName(title, unread, total);
+        item.rssSourceNameTextWeight = unread > 0 ? Font.Bold : Font.Normal;
     }
 
     Component {
@@ -236,54 +243,72 @@ Item {
 
             property int currentIndex: index
             property string table: "[" + rssUrl + "]"
+            property alias rssSourceNameText: rssSourceName.text
+            property alias rssSourceNameTextWeight: rssSourceName.font.weight
 
             height: root.iconSize + Math.round(units.gridUnit / 2)
 
-            Image {
-                id: rssSourceIcon
-                width: root.iconSize
-                height: width
-                anchors.left: parent.left
-                fillMode: Image.PreserveAspectCrop
-                source: getFaviconUrl(rssUrl)
+            PlasmaCore.ToolTipArea {
+                id: tooltip
+                anchors.fill: parent
+                Image {
+                    id: rssSourceIcon
+                    width: root.iconSize
+                    height: width
+                    anchors.left: parent.left
+                    fillMode: Image.PreserveAspectCrop
+                    source: getFaviconUrl(rssUrl)
 
-                onStatusChanged: {
-                    if (status == Image.Error) {
-                        source = root.appletIcon;
+                    onStatusChanged: {
+                        if (status == Image.Error) {
+                            source = root.appletIcon;
+                        }
                     }
                 }
-            }
 
-            PlasmaComponents.Label {
-                id: rssSourceName
+                PlasmaComponents.Label {
+                    id: rssSourceName
 
-                anchors {
-                    left: rssSourceIcon.right
-                    leftMargin: Math.round(units.gridUnit / 2)
-                    right: parent.right
+                    anchors {
+                        left: rssSourceIcon.right
+                        leftMargin: Math.round(units.gridUnit / 2)
+                        right: parent.right
+                    }
+                    height: root.iconSize
+                    elide: Text.ElideRight
+                    font.weight: Font.Normal
                 }
-                height: root.iconSize
-                elide: Text.ElideRight
-                font.weight: Font.Normal
             }
 
-            onClicked: {
-                if (fullRep.sourceClick &&
-                    currentIndex == rssListPanel.activeRss.currentIndex
-                   ) {
-                    rssListPanel.activeRss = null;
-                    rssSourceScroll.anchors.rightMargin = 0;
-                    separator.visible = false;
-                    heading.text = "RSS Indicator";
-                    heading.level = 1;
-                    fullRep.sourceClick = false;
-                } else {
-                    rssListPanel.activeRss = listItem;
-                    rssSourceScroll.anchors.rightMargin = rssListPanel.width;
-                    separator.visible = true;
-                    heading.text = makeFeedHeading(info.title, feedList.unread);
-                    heading.level = 2;
-                    fullRep.sourceClick = true;
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onClicked: {
+                    console.log(mouse.button);
+                    if (mouse.button == Qt.LeftButton){
+                        if (fullRep.sourceClick &&
+                            currentIndex == rssListPanel.activeRss.currentIndex
+                           ) {
+                            rssListPanel.activeRss = null;
+                            rssSourceScroll.anchors.rightMargin = 0;
+                            separator.visible = false;
+                            heading.text = "RSS Indicator";
+                            heading.level = 1;
+                            fullRep.sourceClick = false;
+                        } else {
+                            rssListPanel.activeRss = listItem;
+                            rssSourceScroll.anchors.rightMargin = rssListPanel.width;
+                            separator.visible = true;
+                            heading.text = rssSourceNameText;
+                            heading.level = 2;
+                            fullRep.sourceClick = true;
+                        }
+                    } else if (mouse.button == Qt.RightButton) {
+                        console.log("right");
+                        if (info.link) {
+                            Qt.openUrlExternally(info.link);
+                        }
+                    }
                 }
             }
 
@@ -331,7 +356,10 @@ Item {
                                                  });
                         }
                         feedList.model = feedListModel;
-                        feedList.unread = count - newEntries.length;
+                        var unread = count - newEntries.length;
+                        feedList.unread = unread;
+                        rssSourceName.text = makeSourceName(info.title, unread, count);
+                        rssSourceName.font.weight = unread > 0 ? Font.Bold : Font.Normal;
                         updateAllEntries(table, newEntries);
                     }
                 }
@@ -348,6 +376,8 @@ Item {
                         feedXmlListModel.xml = req.responseText;
                         feedList.rssTitle = info.title
                         feedList.table = table;
+                        tooltip.mainText = info.title;
+                        tooltip.subText = info.description ? info.description : "";
                         console.log("info: " + JSON.stringify(info));
                     }
                 }
