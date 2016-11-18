@@ -29,6 +29,7 @@ Item {
 
             height: root.iconSize + Math.round(units.gridUnit / 2)
             width: parent.width
+
             PlasmaCore.ToolTipArea {
                 id: feedTitle
 
@@ -43,9 +44,14 @@ Item {
                 Text {
                     id: feedTitleText
                     text: title
-                    /* font.pointSize: Math.max(10, theme.smallestFont.pointSize) */
+                    anchors {
+                        left: parent.left
+                        leftMargin: units.smallSpacing
+                        verticalCenter: parent.verticalCenter
+                    }
                     wrapMode: Text.WordWrap
                     font {
+                        /* pointSize: Math.max(10, theme.smallestFont.pointSize) */
                         weight: read ? Font.Normal : Font.Bold
                     }
                 }

@@ -20,17 +20,18 @@ Item {
 
     PlasmaExtras.Heading {
         id: heading
-        level: 1
+        level: 2
 
         anchors {
             left: parent.left
             top: parent.top
             right: parent.right
+            leftMargin: units.smallSpacing
         }
 
         height: paintedHeight
 
-        horizontalAlignment: Text.AlignHCenter
+        horizontalAlignment: Text.AlignLeft
         text: "RSS Indicator"
     }
 
@@ -280,11 +281,29 @@ Item {
                 }
             }
 
+            PlasmaComponents.ToolButton {
+                id: updateFeedButton
+
+                anchors {
+                    right: parent.right
+                    rightMargin: Math.round(units.gridUnit / 3)
+                    verticalCenter: parent.verticalCenter
+                }
+                iconSource: "view-refresh"
+                tooltip: i18n("Stop monitoring this activity")
+                /* opacity: activityList.currentVisibleButtonIndex == index && ActivityName != i18n("other applications") ? 1 : 0 */
+                /* visible: opacity != 0 */
+
+                /* onClicked: { */
+                /*     activityModel.ignoreActivity(ActivityName) */
+                /* } */
+                visible: true
+            }
+
             MouseArea {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onClicked: {
-                    console.log(mouse.button);
                     if (mouse.button == Qt.LeftButton){
                         if (fullRep.sourceClick &&
                             currentIndex == rssListPanel.activeRss.currentIndex
@@ -293,18 +312,19 @@ Item {
                             rssSourceScroll.anchors.rightMargin = 0;
                             separator.visible = false;
                             heading.text = "RSS Indicator";
-                            heading.level = 1;
+                            heading.anchors.leftMargin = units.smallSpacing;
+                            /* heading.level = 1; */
                             fullRep.sourceClick = false;
                         } else {
                             rssListPanel.activeRss = listItem;
                             rssSourceScroll.anchors.rightMargin = rssListPanel.width;
                             separator.visible = true;
                             heading.text = rssSourceNameText;
-                            heading.level = 2;
+                            heading.anchors.leftMargin = root.leftColumnWidth + units.smallSpacing;
+                            /* heading.level = 2; */
                             fullRep.sourceClick = true;
                         }
                     } else if (mouse.button == Qt.RightButton) {
-                        console.log("right");
                         if (info.link) {
                             Qt.openUrlExternally(info.link);
                         }
