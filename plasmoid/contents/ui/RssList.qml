@@ -6,8 +6,13 @@ import org.kde.plasma.extras 2.0 as PlasmaExtras
 
 Item {
     property alias model: listView.model
+    property string rssTitle
+    property string table
+    property int unread
     ListView {
         id: listView
+
+
         anchors {
             left: parent.left
             top: parent.top
@@ -23,6 +28,9 @@ Item {
             height: root.iconSize + Math.round(units.gridUnit / 2)
             width: parent.width
             PlasmaCore.ToolTipArea {
+                id: feedTitle
+
+                property alias fontWeight: feedTitleText.font.weight
                 anchors.fill: parent
 
                 mainText: title
@@ -31,13 +39,30 @@ Item {
                 location: PlasmaCore.Types.LeftEdge
 
                 Text {
+                    id: feedTitleText
                     text: title
                     /* font.pointSize: Math.max(10, theme.smallestFont.pointSize) */
                     wrapMode: Text.WordWrap
+                    font {
+                        weight: read ? Font.Normal : Font.Bold
+                    }
                 }
             }
-            onClicked: {
-                Qt.openUrlExternally(link);
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (mouse.button == Qt.LeftButton) {
+                        if (feedTitle.fontWeight != Font.Normal) {
+                            feedTitle.fontWeight = Font.Normal;
+                            fullRep.markEntryAsRead(table, sig);
+                            unread--;
+                            fullRep.heading.text = fullRep.makeFeedHeading(rssTitle, unread);
+                        }
+                    }
+                }
+                onDoubleClicked: {
+                    Qt.openUrlExternally(link);
+                }
             }
         }
         snapMode: ListView.SnapToItem

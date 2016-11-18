@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.LocalStorage 2.0
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.4
 import QtQuick.XmlListModel 2.0
@@ -12,6 +13,7 @@ Item {
     id: fullRep
 
     property bool sourceClick: false
+    property alias heading: heading
 
     Layout.minimumWidth: units.gridUnit * 12
     Layout.minimumHeight: units.gridUnit * 12
@@ -94,7 +96,7 @@ Item {
     }
 
     function getFaviconUrl(url) {
-         return getBaseUrl(url) + "/favicon.ico";
+        return getBaseUrl(url) + "/favicon.ico";
     }
 
     function getFeedInfo(xml) {
@@ -125,8 +127,15 @@ Item {
     }
 
     property variant urls
+    property variant db
     Component.onCompleted: {
         urls = plasmoid.configuration.urls.split('\n');
+        db = LocalStorage.openDatabaseSync("RssIndicatorDB", root.version, "SQLite for RssIndicator", 100);
+        cleanUpTables();
+    }
+
+    function cleanUpTables() {
+        //TODO
     }
 
     StackView {
@@ -180,6 +189,43 @@ Item {
             }
         }
     }
+
+    function getAllEntries(table) {
+        var entries = []
+        fullRep.db.transaction(
+            function (tx) {
+                tx.executeSql("CREATE TABLE IF NOT EXISTS " + table + " (sig TEXT)");
+                var rs = tx.executeSql("SELECT * FROM " + table);
+                for(var i = 0; i < rs.rows.length; i++) {
+                    entries.push(rs.rows.item(i).sig);
+                }
+            }
+        )
+        return entries;
+    }
+    function markEntryAsRead(table, sig) {
+        db.transaction(
+            function (tx) {
+                console.log("table: " + table);
+                console.log("sig: " + sig);
+                tx.executeSql("INSERT INTO " + table + " VALUES(?)", [sig]);
+            }
+        );
+    }
+    function updateAllEntries(table, newEntries) {
+        db.transaction(
+            function (tx) {
+                tx.executeSql("DELETE FROM " + table);
+                for (var i = 0; i < newEntries.length; i++) {
+                    tx.executeSql("INSERT INTO " + table + " VALUES(?)", [newEntries[i]]);
+                }
+            }
+        );
+    }
+    function makeFeedHeading(title, unread) {
+        return title + " (" + unread + ")"
+    }
+
     Component {
         id: rssSourceDelegate
         PlasmaComponents.ListItem {
@@ -189,6 +235,7 @@ Item {
             checked: listItem.containsMouse && !fullRep.sourceClick
 
             property int currentIndex: index
+            property string table: "[" + rssUrl + "]"
 
             height: root.iconSize + Math.round(units.gridUnit / 2)
 
@@ -228,12 +275,14 @@ Item {
                     rssSourceScroll.anchors.rightMargin = 0;
                     separator.visible = false;
                     heading.text = "RSS Indicator";
+                    heading.level = 1;
                     fullRep.sourceClick = false;
                 } else {
                     rssListPanel.activeRss = listItem;
                     rssSourceScroll.anchors.rightMargin = rssListPanel.width;
                     separator.visible = true;
-                    heading.text = info.title;
+                    heading.text = makeFeedHeading(info.title, feedList.unread);
+                    heading.level = 2;
                     fullRep.sourceClick = true;
                 }
             }
@@ -243,8 +292,12 @@ Item {
                 id: feedList
             }
 
-            XmlListModel {
+            ListModel {
                 id: feedListModel
+            }
+
+            XmlListModel {
+                id: feedXmlListModel
 
                 query: "/rss/channel/item"
 
@@ -257,7 +310,29 @@ Item {
                     if (status === XmlListModel.Error) {
                     }
                     if (status === XmlListModel.Ready) {
+                        var readEntries = getAllEntries(table);
+                        var newEntries = [];
+                        console.log(readEntries);
+                        for (var i = 0; i < count; i++) {
+                            var item = get(i);
+                            var sig = Qt.md5(item.title);
+                            var read = true;
+                            if (readEntries.indexOf(sig) == -1) {
+                                read = false;
+                            } else {
+                                newEntries.push(sig);
+                            }
+                            feedListModel.append({title: item.title,
+                                                  pubDate: item.pubDate,
+                                                  description: item.description,
+                                                  link: item.link,
+                                                  read: read,
+                                                  sig: sig
+                                                 });
+                        }
                         feedList.model = feedListModel;
+                        feedList.unread = count - newEntries.length;
+                        updateAllEntries(table, newEntries);
                     }
                 }
 
@@ -270,7 +345,9 @@ Item {
                     if (req.readyState == XMLHttpRequest.DONE) {
                         info = getFeedInfo(req.responseXML.documentElement);
                         rssSourceName.text = info.title;
-                        feedListModel.xml = req.responseText;
+                        feedXmlListModel.xml = req.responseText;
+                        feedList.rssTitle = info.title
+                        feedList.table = table;
                         console.log("info: " + JSON.stringify(info));
                     }
                 }
