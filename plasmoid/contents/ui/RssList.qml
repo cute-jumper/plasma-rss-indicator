@@ -10,6 +10,8 @@ Item {
     property string rssTitle
     property string table
     property int unread
+    property int itemIndex
+    property bool bulkChangeRead
 
     ListView {
         id: listView
@@ -29,6 +31,20 @@ Item {
 
             height: root.iconSize + Math.round(units.gridUnit / 2)
             width: parent.width
+
+            property bool read: model.read
+
+            Component.onCompleted: {
+                rssItem.onReadChanged.connect(function() {
+                    if (read && !bulkChangeRead) {
+                        feedTitleText.font.weight = Font.Normal;
+                        // FIXME
+                        /* fullRep.markEntryAsRead(table, sig); */
+                        unread--;
+                        fullRep.setSourceNameText(rssTitle, unread, listView.model.count, itemIndex);
+                    }
+                });
+            }
 
             PlasmaCore.ToolTipArea {
                 id: feedTitle
@@ -51,7 +67,7 @@ Item {
                     }
                     wrapMode: Text.WordWrap
                     font {
-                        /* pointSize: Math.max(10, theme.smallestFont.pointSize) */
+                    /*     pointSize: Math.max(10, theme.smallestFont.pointSize) */
                         weight: read ? Font.Normal : Font.Bold
                     }
                 }
@@ -62,11 +78,8 @@ Item {
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onClicked: {
                     if (mouse.button == Qt.LeftButton) {
-                        if (feedTitle.fontWeight != Font.Normal) {
-                            feedTitle.fontWeight = Font.Normal;
-                            /* fullRep.markEntryAsRead(table, sig); */
-                            unread--;
-                            fullRep.setSourceNameText(rssTitle, unread, listView.model.count);
+                        if (!read) {
+                            read = true;
                         }
                     } else if (mouse.button == Qt.RightButton) {
                         if (link) {

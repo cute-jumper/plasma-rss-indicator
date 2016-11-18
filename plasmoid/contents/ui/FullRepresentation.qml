@@ -228,10 +228,17 @@ Item {
     }
 
 
-    function setSourceNameText(title, unread, total) {
-        var item = rssListPanel.activeRss;
-        item.rssSourceNameText = heading.text = makeSourceName(title, unread, total);
+    function setSourceNameText(title, unread, total, itemIndex) {
+        console.log("title: " + title);
+        console.log("unread: " + unread);
+        console.log("total: " + total);
+        var text = makeSourceName(title, unread, total);
+        var item = rssSourceList.contentItem.children[itemIndex];
+        item.rssSourceNameText = text;
         item.rssSourceNameTextWeight = unread > 0 ? Font.Bold : Font.Normal;
+        if (rssListPanel.activeRss) {
+            heading.text = text;
+        }
     }
 
     Component {
@@ -289,15 +296,41 @@ Item {
                     rightMargin: Math.round(units.gridUnit / 3)
                     verticalCenter: parent.verticalCenter
                 }
-                iconSource: "view-refresh"
-                tooltip: i18n("Stop monitoring this activity")
-                /* opacity: activityList.currentVisibleButtonIndex == index && ActivityName != i18n("other applications") ? 1 : 0 */
-                /* visible: opacity != 0 */
 
-                /* onClicked: { */
-                /*     activityModel.ignoreActivity(ActivityName) */
-                /* } */
-                visible: true
+                iconSource: "view-refresh"
+                tooltip: i18n("Update feeds")
+
+                opacity: listItem.containsMouse ? 1 : 0
+                visible: opacity != 0 && !rssListPanel.activeRss
+            }
+
+            PlasmaComponents.ToolButton {
+                id: markReadButton
+
+                anchors {
+                    right: updateFeedButton.left
+                    verticalCenter: parent.verticalCenter
+                }
+
+                iconSource: "mail-mark-read"
+                tooltip: i18n("Mark as read")
+
+                opacity: listItem.containsMouse ? 1 : 0
+                visible: opacity != 0 && !rssListPanel.activeRss
+
+                onClicked: {
+                    if (feedList.model) {
+                        updateAllEntries(table, allEntries);
+                        readEntries = allEntries;
+                        feedList.bulkChangeRead = true;
+                        for (var i = 0; i < feedList.model.count; i++) {
+                            feedList.model.get(i).read = true;
+                        }
+                        feedList.unread = 0;
+                        feedList.bulkChangeRead = false;
+                        setSourceNameText(info.title, 0, feedList.model.count, currentIndex);
+                    }
+                }
             }
 
             MouseArea {
@@ -313,7 +346,6 @@ Item {
                             separator.visible = false;
                             heading.text = "RSS Indicator";
                             heading.anchors.leftMargin = units.smallSpacing;
-                            /* heading.level = 1; */
                             fullRep.sourceClick = false;
                         } else {
                             rssListPanel.activeRss = listItem;
@@ -321,7 +353,6 @@ Item {
                             separator.visible = true;
                             heading.text = rssSourceNameText;
                             heading.anchors.leftMargin = root.leftColumnWidth + units.smallSpacing;
-                            /* heading.level = 2; */
                             fullRep.sourceClick = true;
                         }
                     } else if (mouse.button == Qt.RightButton) {
@@ -341,6 +372,8 @@ Item {
                 id: feedListModel
             }
 
+            property variant readEntries
+            property variant allEntries
             XmlListModel {
                 id: feedXmlListModel
 
@@ -355,8 +388,9 @@ Item {
                     if (status === XmlListModel.Error) {
                     }
                     if (status === XmlListModel.Ready) {
-                        var readEntries = getAllEntries(table);
-                        var newEntries = [];
+                        readEntries = getAllEntries(table);
+                        var newReadEntries = [];
+                        allEntries = [];
                         console.log(readEntries);
                         for (var i = 0; i < count; i++) {
                             var item = get(i);
@@ -365,22 +399,24 @@ Item {
                             if (readEntries.indexOf(sig) == -1) {
                                 read = false;
                             } else {
-                                newEntries.push(sig);
+                                newReadEntries.push(sig);
                             }
+                            allEntries.push(sig);
                             feedListModel.append({title: item.title,
                                                   pubDate: item.pubDate,
                                                   description: item.description,
                                                   link: item.link,
                                                   read: read,
-                                                  sig: sig
-                                                 });
+                                                  sig: sig});
                         }
                         feedList.model = feedListModel;
-                        var unread = count - newEntries.length;
+                        var unread = count - newReadEntries.length;
                         feedList.unread = unread;
+                        feedList.itemIndex = currentIndex;
                         rssSourceName.text = makeSourceName(info.title, unread, count);
                         rssSourceName.font.weight = unread > 0 ? Font.Bold : Font.Normal;
-                        updateAllEntries(table, newEntries);
+                        updateAllEntries(table, newReadEntries);
+                        readEntries = newReadEntries;
                     }
                 }
 
