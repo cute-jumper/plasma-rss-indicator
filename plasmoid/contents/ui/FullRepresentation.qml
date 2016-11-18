@@ -221,18 +221,21 @@ Item {
             }
 
             onClicked: {
-                if (fullRep.sourceClick) {
+                if (fullRep.sourceClick &&
+                    currentIndex == rssListPanel.activeRss.currentIndex
+                   ) {
                     rssListPanel.activeRss = null;
                     rssSourceScroll.anchors.rightMargin = 0;
                     separator.visible = false;
-                    heading.text = "RSS Indicator"
+                    heading.text = "RSS Indicator";
+                    fullRep.sourceClick = false;
                 } else {
                     rssListPanel.activeRss = listItem;
                     rssSourceScroll.anchors.rightMargin = rssListPanel.width;
                     separator.visible = true;
-                    heading.text = "Details"
+                    heading.text = info.title;
+                    fullRep.sourceClick = true;
                 }
-                fullRep.sourceClick = !fullRep.sourceClick;
             }
 
             property alias feedList: feedList
@@ -261,7 +264,6 @@ Item {
             }
 
             property variant info
-            property variant feeds
             Component.onCompleted: {
                 var req = new XMLHttpRequest();
                 req.onreadystatechange = function () {

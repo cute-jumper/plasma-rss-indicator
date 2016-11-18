@@ -10,7 +10,8 @@
             <default>10</default>
         </entry>
         <entry name="urls" type="String">
-            <default>https://dot.kde.org/rss.xml</default>
+          <default>https://dot.kde.org/rss.xml
+http://mashable.com/rss</default>
         </entry>
     </group>
         
