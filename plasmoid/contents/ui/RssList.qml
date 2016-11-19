@@ -7,15 +7,10 @@ import org.kde.plasma.extras 2.0 as PlasmaExtras
 Item {
     id: rssList
     property alias model: listView.model
-    property string rssTitle
-    property string table
-    property int unread
-    property int itemIndex
     property bool bulkChangeRead
 
     ListView {
         id: listView
-
 
         anchors {
             left: parent.left
@@ -24,6 +19,7 @@ Item {
             bottom: parent.bottom
         }
         clip: true
+
         delegate: PlasmaComponents.ListItem {
             id: rssItem
             enabled: true
@@ -37,11 +33,7 @@ Item {
             Component.onCompleted: {
                 rssItem.onReadChanged.connect(function() {
                     if (read && !bulkChangeRead) {
-                        feedTitleText.font.weight = Font.Normal;
-                        // FIXME
-                        /* fullRep.markEntryAsRead(table, sig); */
-                        unread--;
-                        fullRep.setSourceNameText(rssTitle, unread, listView.model.count, itemIndex);
+                        listItem.markEntryAsRead(sig);
                     }
                 });
             }
@@ -67,7 +59,7 @@ Item {
                     }
                     wrapMode: Text.WordWrap
                     font {
-                    /*     pointSize: Math.max(10, theme.smallestFont.pointSize) */
+                        /*     pointSize: Math.max(10, theme.smallestFont.pointSize) */
                         weight: read ? Font.Normal : Font.Bold
                     }
                 }
