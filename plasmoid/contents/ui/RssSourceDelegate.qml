@@ -79,7 +79,12 @@ PlasmaComponents.ListItem {
         visible: opacity != 0 && !rssListPanel.activeRss
 
         onClicked: {
-
+            requestFeedsUpdate(function (xml) {
+                var channel = getFeedChannel(xml);
+                var items = getFeedItemsFromChannel(channel);
+                var added = updateUIByItems(items);
+                console.log("After update: " + added + " item(s) added.");
+            });
         }
     }
 
@@ -185,6 +190,7 @@ PlasmaComponents.ListItem {
     }
 
     function updateUIByItems(items) {
+        var added = 0;
         for (var i = 0; i < items.length; i++) {
             var sig = Qt.md5(items[i].title);
             if (allEntries.indexOf(sig) == -1) {
@@ -195,9 +201,11 @@ PlasmaComponents.ListItem {
                                       link: items[i].link,
                                       read: readEntries.indexOf(sig) != -1,
                                       sig: sig});
+                added++;
             }
         }
         unread = allEntries.length - readEntries.length;
+        return added;
     }
 
     function markEntryAsRead(sig) {
