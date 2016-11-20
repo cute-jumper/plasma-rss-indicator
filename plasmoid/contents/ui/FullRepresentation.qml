@@ -14,6 +14,7 @@ Item {
 
     property bool sourceClick: false
     property alias heading: heading
+    property int refresh: plasmoid.configuration.refresh * 1000
 
     Layout.minimumWidth: units.gridUnit * 12
     Layout.minimumHeight: units.gridUnit * 14
@@ -81,21 +82,52 @@ Item {
             }
             delegate: RssSourceDelegate {}
             snapMode: ListView.SnapToItem
-            Component.onCompleted: {
-                for (var i = 0; i < urls.length; i++) {
-                    rssSourceModel.append({rssUrl: urls[i]});
-                }
-            }
         }
     }
 
-    property variant urls
+    property variant urls: plasmoid.configuration.urls.split('\n').filter(validUrl).map(urlFix)
+
+    function validUrl(loc) {
+        // FIXME
+        return loc != "";
+    }
+
+    function urlFix(loc) {
+        // FIXME
+        return loc;
+    }
+
+    onUrlsChanged: {
+        var newIndex = 0, oldIndex = 0;
+        while (newIndex < urls.length && oldIndex < rssSourceModel.count) {
+            var oldUrl = rssSourceModel.get(oldIndex).rssUrl;
+            if (oldUrl != urls[newIndex]) {
+                rssSourceModel.insert(oldIndex, {rssUrl: urls[newIndex]});
+                console.log("inserting... " + rssSourceModel.get(oldIndex).rssUrl);
+            }
+            oldIndex++;
+            newIndex++;
+        }
+        console.log("oldIndex: " + oldIndex + " and model count: " + rssSourceModel.count);
+        console.log("newIndex: " + newIndex + " and urls.length: " + urls.length);
+        while (oldIndex < rssSourceModel.count) {
+            console.log("Removing... " + rssSourceModel.get(oldIndex).rssUrl);
+            rssSourceModel.remove(oldIndex);
+        }
+        while (newIndex < urls.length) {
+            rssSourceModel.append({rssUrl: urls[newIndex]});
+            console.log("Adding... " + rssSourceModel.get(newIndex).rssUrl);
+            newIndex++;
+        }
+    }
+
     property variant db
     Component.onCompleted: {
-        urls = plasmoid.configuration.urls.split('\n');
         db = LocalStorage.openDatabaseSync("RssIndicatorDB", root.version, "SQLite for RssIndicator", 100);
         cleanUpTables();
     }
+
+
 
     function cleanUpTables() {
         //TODO

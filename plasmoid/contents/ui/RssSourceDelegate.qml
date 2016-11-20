@@ -79,23 +79,35 @@ PlasmaComponents.ListItem {
         visible: opacity != 0 && !rssListPanel.activeRss
 
         onClicked: {
-            requestFeedsUpdate(function (xml) {
-                var channel = getFeedChannel(xml);
-                var items = getFeedItemsFromChannel(channel);
-                var added = updateUIByItems(items);
-                console.log("After update: " + added.length + " item(s) added.");
-                if (added.length > 0) {
-                    var text = "";
-                    for (var i = 0; i < added.length; i++) {
-                        text += added[i].title + "\n";
-                    }
-                    fullRep.createNotification(info.title, text);
-                } else {
-                    // FIXME
-                    fullRep.createNotification(info.title, "No updates");
-                }
-            });
+            refreshFeeds();
         }
+    }
+
+    Timer {
+        id: refreshTimer
+        interval: fullRep.refresh
+        running: !plasmoid.userConfiguring
+        repeat: true
+        onTriggered: { refreshFeeds(); }
+    }
+
+    function refreshFeeds() {
+        requestFeedsUpdate(function (xml) {
+            var channel = getFeedChannel(xml);
+            var items = getFeedItemsFromChannel(channel);
+            var added = updateUIByItems(items);
+            console.log("After update: " + added.length + " item(s) added.");
+            if (added.length > 0) {
+                var text = "";
+                for (var i = 0; i < added.length; i++) {
+                    text += added[i].title + "\n";
+                }
+                fullRep.createNotification(info.title, text);
+            } else {
+                // FIXME
+                fullRep.createNotification(info.title, "No updates");
+            }
+        });
     }
 
     PlasmaComponents.ToolButton {
@@ -138,6 +150,7 @@ PlasmaComponents.ListItem {
                     rssSourceScroll.anchors.rightMargin = 0;
                     separator.visible = false;
                     heading.text = "RSS Indicator";
+                    heading.horizontalAlignment = Text.AlignLeft;
                     heading.anchors.leftMargin = units.smallSpacing;
                     fullRep.sourceClick = false;
                 } else {
@@ -145,6 +158,7 @@ PlasmaComponents.ListItem {
                     rssSourceScroll.anchors.rightMargin = rssListPanel.width;
                     separator.visible = true;
                     heading.text = rssSourceName.text;
+                    heading.horizontalAlignment = Text.AlignHCenter;
                     heading.anchors.leftMargin = root.leftColumnWidth + units.smallSpacing;
                     fullRep.sourceClick = true;
                 }

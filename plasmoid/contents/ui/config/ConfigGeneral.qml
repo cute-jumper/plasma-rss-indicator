@@ -9,31 +9,30 @@ Item {
     property alias cfg_urls: urls.text
 
     GridLayout {
-       Layout.fillWidth: true
-       rowSpacing: 10
-       columnSpacing: 10
-       columns: 2
+        Layout.fillWidth: true
+        rowSpacing: 10
+        columnSpacing: 10
+        columns: 2
         
-       Text {
-           text: "Reload time (seconds)"
-       }
-       SpinBox {
+        Text {
+            text: "Reload time (seconds)"
+        }
+        SpinBox {
             id: refresh
             decimals: 0
-            stepSize: 1
+            stepSize: 100
             minimumValue: 1
-            maximumValue: 1800
-            
-       }
-       Text {
-           text: "URLs (one per line)"
-           Layout.alignment: Qt.AlignTop
-       }
-       TextArea {
-           Layout.fillWidth: true
-           Layout.minimumWidth: 400
-           id: urls
-       }
+            maximumValue: 86400
+        }
+        Text {
+            text: "URLs (one per line)"
+            Layout.alignment: Qt.AlignTop
+        }
+        TextArea {
+            Layout.fillWidth: true
+            Layout.minimumWidth: 400
+            id: urls
+        }
     }
     
 }

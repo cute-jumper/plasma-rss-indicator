@@ -7,7 +7,7 @@
 
     <group name="General">
         <entry name="refresh" type="Int">
-            <default>10</default>
+            <default>1800</default>
         </entry>
         <entry name="urls" type="String">
           <default>https://dot.kde.org/rss.xml
