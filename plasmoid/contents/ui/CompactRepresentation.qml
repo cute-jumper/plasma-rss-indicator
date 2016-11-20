@@ -10,11 +10,11 @@ Item {
 
     Layout.minimumWidth: units.gridUnit * 8
     Layout.minimumHeight: units.iconSizes.small
-PlasmaComponents.Label {
-    Layout.minimumWidth : formFactor == PlasmaCore.Types.Horizontal ? height : 1
-    Layout. minimumHeight : formFactor == PlasmaCore.Types.Vertical ? width  : 1
-    text: "Hello world in plasma5 ";
-}
+    PlasmaComponents.Label {
+        Layout.minimumWidth : formFactor == PlasmaCore.Types.Horizontal ? height : 1
+        Layout. minimumHeight : formFactor == PlasmaCore.Types.Vertical ? width  : 1
+        text: "Hello world in plasma5 ";
+    }
     MouseArea {
         id: mouseArea
         anchors.fill: parent

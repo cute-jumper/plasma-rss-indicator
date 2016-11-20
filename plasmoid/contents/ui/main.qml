@@ -7,11 +7,13 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item {
     id: root
+    property string appName: "rssIndicator"
     property string version: "0.1"
     property int iconSize: units.iconSizes.smallMedium
     property int leftColumnWidth: iconSize + Math.round(units.gridUnit / 2)
     property string appletIcon: "rssindicator.png"
 
     /* Plasmoid.compactRepresentation: CompactRepresentation { } */
+    /* Plasmoid.fullRepresentation: FullRepresentationMock { } */
     Plasmoid.fullRepresentation: FullRepresentation { }
 }

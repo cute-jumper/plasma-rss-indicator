@@ -83,7 +83,17 @@ PlasmaComponents.ListItem {
                 var channel = getFeedChannel(xml);
                 var items = getFeedItemsFromChannel(channel);
                 var added = updateUIByItems(items);
-                console.log("After update: " + added + " item(s) added.");
+                console.log("After update: " + added.length + " item(s) added.");
+                if (added.length > 0) {
+                    var text = "";
+                    for (var i = 0; i < added.length; i++) {
+                        text += added[i].title + "\n";
+                    }
+                    fullRep.createNotification(info.title, text);
+                } else {
+                    // FIXME
+                    fullRep.createNotification(info.title, "No updates");
+                }
             });
         }
     }
@@ -190,7 +200,7 @@ PlasmaComponents.ListItem {
     }
 
     function updateUIByItems(items) {
-        var added = 0;
+        var added = [];
         for (var i = 0; i < items.length; i++) {
             var sig = Qt.md5(items[i].title);
             if (allEntries.indexOf(sig) == -1) {
@@ -201,7 +211,7 @@ PlasmaComponents.ListItem {
                                       link: items[i].link,
                                       read: readEntries.indexOf(sig) != -1,
                                       sig: sig});
-                added++;
+                added.push(items[i]);
             }
         }
         unread = allEntries.length - readEntries.length;
@@ -249,6 +259,68 @@ PlasmaComponents.ListItem {
                 }
             }
         );
+    }
+
+    function getBaseUrl(url) {
+        console.log("[getBaseUrl] " + url);
+        if (!url.match("^http")) {
+            url = "http://" + url;
+        }
+        var regex = new RegExp('^(https?://[^/?#]*).*');
+        var m = url.match(regex);
+        if (typeof m[1])
+            return m[1];
+        return null;
+    }
+
+    function getFaviconUrl(url) {
+        return getBaseUrl(url) + "/favicon.ico";
+    }
+
+    function getFeedChannel(xml) {
+        for (var i = 0; i < xml.childNodes.length; i++) {
+            if (xml.childNodes[i].tagName == "channel") {
+                return xml.childNodes[i];
+            }
+        }
+    }
+
+    function getEntry(root, tagNameList) {
+        var entry = {};
+        for (var i = 0; i < root.childNodes.length; i++) {
+            var tagName = root.childNodes[i].tagName;
+            if (tagNameList.indexOf(tagName) != -1) {
+                var text = "";
+                var nodes = root.childNodes[i].childNodes;
+                for (var j = 0; j < nodes.length; j++) {
+                    text += nodes[j].nodeValue;
+                }
+                entry[tagName] = text;
+            }
+        }
+        return entry;
+    }
+
+
+    property variant feedTagNameList: ["title", "link", "description", "language", "pubDate"]
+    function getFeedInfoFromChannel(channel) {
+        var stop = false;
+        if (channel != null) {
+            return getEntry(channel, feedTagNameList);
+        }
+        return {};
+    }
+
+    property variant itemTagNameList: ["title", "link", "description", "pubDate"]
+    function getFeedItemsFromChannel(channel) {
+        var items = [];
+        for (var i = 0; i < channel.childNodes.length; i++) {
+            var tagName = channel.childNodes[i].tagName;
+            if (tagName == "item") {
+                items.push(getEntry(channel.childNodes[i], itemTagNameList));
+            }
+        }
+        return items;
     }
 
 }

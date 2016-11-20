@@ -2,18 +2,19 @@
 Encoding=UTF-8
 Name=RSS Indicator
 Comment=Notify when new feeds comes
+Icon=ui/rssindicator.png
 Type=Service
 
-X-KDE-Library=plasma_applet_tutorial
-X-KDE-ParentApp=
 X-KDE-PluginInfo-Author=Junpeng Qiu
 X-KDE-PluginInfo-Email=qjpchmail@gmail.com
 X-KDE-PluginInfo-License=GPL
-X-KDE-PluginInfo-Name=org.cutejumper.rssIndicator
+X-KDE-PluginInfo-Name=rss_indicator
 X-KDE-PluginInfo-Version=0.1
 X-KDE-PluginInfo-Website=https://github.com/cute-jumper/plasma-applet-rss-indicator
+X-KDE-PluginInfo-Category=Utilities
 X-KDE-ServiceTypes=Plasma/Applet,Plasma/PopupApplet
+
 X-Plasma-API=declarativeappletscript
 X-Plasma-MainScript=ui/main.qml
-X-Plasma-RemoteLocation=
-X-KDE-PluginInfo-Category=Utilities
+X-Plasma-DefaultSize=500,500
+X-Plasma-StandAloneApp=true

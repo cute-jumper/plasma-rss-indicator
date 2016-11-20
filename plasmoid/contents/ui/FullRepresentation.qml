@@ -16,7 +16,9 @@ Item {
     property alias heading: heading
 
     Layout.minimumWidth: units.gridUnit * 12
-    Layout.minimumHeight: units.gridUnit * 12
+    Layout.minimumHeight: units.gridUnit * 14
+    width: 500
+    height: 600
 
     PlasmaExtras.Heading {
         id: heading
@@ -86,65 +88,6 @@ Item {
             }
         }
     }
-    function getBaseUrl(url) {
-        console.log("[getBaseUrl] " + url);
-        if (!url.match("^http")) {
-            url = "http://" + url;
-        }
-        var regex = new RegExp('^(https?://[^/?#]*).*');
-        var m = url.match(regex);
-        if (typeof m[1])
-            return m[1];
-        return null;
-    }
-
-    function getFaviconUrl(url) {
-        return getBaseUrl(url) + "/favicon.ico";
-    }
-
-    function getFeedChannel(xml) {
-        for (var i = 0; i < xml.childNodes.length; i++) {
-            if (xml.childNodes[i].tagName == "channel") {
-                return xml.childNodes[i];
-            }
-        }
-    }
-
-    function getEntry(root, tagNameList) {
-        var entry = {};
-        for (var i = 0; i < root.childNodes.length; i++) {
-            var tagName = root.childNodes[i].tagName;
-            if (tagNameList.indexOf(tagName) != -1) {
-                var child = root.childNodes[i].firstChild
-                if (child) {
-                    entry[tagName] = child.nodeValue;
-                }
-            }
-        }
-        return entry;
-    }
-
-
-    property variant feedTagNameList: ["title", "link", "description", "language", "pubDate"]
-    function getFeedInfoFromChannel(channel) {
-        var stop = false;
-        if (channel != null) {
-            return getEntry(channel, feedTagNameList);
-        }
-        return {};
-    }
-
-    property variant itemTagNameList: ["title", "link", "description", "pubDate"]
-    function getFeedItemsFromChannel(channel) {
-        var items = [];
-        for (var i = 0; i < channel.childNodes.length; i++) {
-            var tagName = channel.childNodes[i].tagName;
-            if (tagName == "item") {
-                items.push(getEntry(channel.childNodes[i], itemTagNameList));
-            }
-        }
-        return items;
-    }
 
     property variant urls
     property variant db
@@ -208,5 +151,25 @@ Item {
                 }
             }
         }
+    }
+
+    PlasmaCore.DataSource {
+        id: notificationSource
+        engine: "notifications"
+        connectedSources: "org.freedesktop.Notifications"
+    }
+
+    function createNotification(title, text) {
+        var service = notificationSource.serviceForSource("notification");
+        var operation = service.operationDescription("createNotification");
+
+        operation.appName = root.appName
+        operation["appIcon"] = root.appletIcon
+        operation.summary = title;
+        operation["body"] = text;
+        // TODO
+        operation["timeout"] = 2000;
+
+        service.startOperationCall(operation);
     }
 }
