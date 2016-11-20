@@ -15,7 +15,7 @@ Item {
         columns: 2
         
         Text {
-            text: "Reload time (seconds)"
+            text: "Refresh time (seconds)"
         }
         SpinBox {
             id: refresh

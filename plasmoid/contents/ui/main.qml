@@ -16,7 +16,6 @@ Item {
 
     Plasmoid.icon: plasmoid.file("ui", appletIcon);
 
-    /* Plasmoid.fullRepresentation: FullRepresentationMock { } */
     Plasmoid.compactRepresentation: CompactRepresentation { }
     Plasmoid.fullRepresentation: FullRepresentation { }
 
@@ -34,8 +33,8 @@ Item {
         operation["appIcon"] = plasmoid.icon;
         operation.summary = title;
         operation["body"] = text;
-        // TODO
-        operation["timeout"] = 2000;
+        // TODO: is this useful?
+        operation["timeout"] = 10000;
 
         service.startOperationCall(operation);
     }

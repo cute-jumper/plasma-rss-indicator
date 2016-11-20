@@ -32,7 +32,7 @@ Item {
     }
 
     Text {
-        text: "" + root.totalUnread
+        text: root.totalUnread > 99 ? "99+" : root.totalUnread
         font.pointSize: 6
         color: "White"
         anchors.centerIn: circle

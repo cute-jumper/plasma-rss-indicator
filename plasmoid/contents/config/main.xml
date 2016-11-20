@@ -10,9 +10,7 @@
             <default>1800</default>
         </entry>
         <entry name="urls" type="String">
-          <default>https://dot.kde.org/rss.xml
-http://mashable.com/rss
-http://news.ycombinator.com/rss</default>
+          <default>https://dot.kde.org/rss.xml</default>
         </entry>
     </group>
         
