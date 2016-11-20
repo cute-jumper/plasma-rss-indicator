@@ -131,7 +131,7 @@ PlasmaComponents.ListItem {
                     feedList.model.get(i).read = true;
                 }
                 feedList.bulkChangeRead = false;
-                unread = 0;
+                changeUnread(function (_) {return 0;});
                 // update cache and db
                 readEntries = allEntries;
                 updateAllEntries(allEntries);
@@ -159,7 +159,7 @@ PlasmaComponents.ListItem {
                     separator.visible = true;
                     heading.text = rssSourceName.text;
                     heading.horizontalAlignment = Text.AlignHCenter;
-                    heading.anchors.leftMargin = root.leftColumnWidth + units.smallSpacing;
+                    heading.anchors.leftMargin = root.leftColumnWidth;
                     fullRep.sourceClick = true;
                 }
             } else if (mouse.button == Qt.RightButton) {
@@ -181,6 +181,7 @@ PlasmaComponents.ListItem {
 
     property variant readEntries
     property variant allEntries: []
+    // -1 is to make sure the rssSourceName.text can be updated when unread -> 0
     property int unread: -1
 
     property variant info
@@ -200,6 +201,18 @@ PlasmaComponents.ListItem {
             // feedListModel is complete now
             feedList.model = feedListModel;
         });
+    }
+
+    function changeUnread(f) {
+        var oldUnread = unread;
+        unread = f(unread);
+        if (oldUnread != unread) {
+            root.totalUnread += unread;
+            if (oldUnread != -1) {
+                root.totalUnread -= oldUnread;
+            }
+            console.log("totalUnread: " + root.totalUnread);
+        }
     }
 
     function requestFeedsUpdate (callback) {
@@ -228,12 +241,12 @@ PlasmaComponents.ListItem {
                 added.push(items[i]);
             }
         }
-        unread = allEntries.length - readEntries.length;
+        changeUnread(function (_) { return allEntries.length - readEntries.length; });
         return added;
     }
 
     function markEntryAsRead(sig) {
-        unread--;
+        changeUnread(function (x) {return x - 1;});
         if (rssListPanel.activeRss) {
             heading.text = rssSourceName.text;
         }

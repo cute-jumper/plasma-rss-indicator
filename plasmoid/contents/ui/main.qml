@@ -12,9 +12,10 @@ Item {
     property int iconSize: units.iconSizes.smallMedium
     property int leftColumnWidth: iconSize + Math.round(units.gridUnit / 2)
     property string appletIcon: "rssindicator.png"
+    property int totalUnread: 0
 
-    /* Plasmoid.compactRepresentation: CompactRepresentation { } */
     /* Plasmoid.fullRepresentation: FullRepresentationMock { } */
+    Plasmoid.compactRepresentation: CompactRepresentation { }
     Plasmoid.fullRepresentation: FullRepresentation { }
 
     PlasmaCore.DataSource {

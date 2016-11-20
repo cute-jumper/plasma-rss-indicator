@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=RSS Indicator
 Comment=Notify when new feeds comes
-Icon=ui/rssindicator.png
+Icon=application-rss+xml
 Type=Service
 
 X-KDE-PluginInfo-Author=Junpeng Qiu

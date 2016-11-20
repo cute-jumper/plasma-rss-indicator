@@ -8,17 +8,42 @@ import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
 Item {
     id: compactRep
 
-    Layout.minimumWidth: units.gridUnit * 8
-    Layout.minimumHeight: units.iconSizes.small
-    PlasmaComponents.Label {
-        Layout.minimumWidth : formFactor == PlasmaCore.Types.Horizontal ? height : 1
-        Layout. minimumHeight : formFactor == PlasmaCore.Types.Vertical ? width  : 1
-        text: "Hello world in plasma5 ";
+    Image {
+        id: compactIcon
+        source: root.appletIcon
+        fillMode: Image.PreserveAspectCrop
+        anchors.fill: parent
+        anchors.margins: units.smallSpacing
+
     }
+
+    Rectangle {
+        id: circle
+        width: 20
+        height: width
+        radius: Math.round(width / 2)
+        color: "Black"
+        opacity: 0.7
+        visible: root.totalUnread > 0
+        anchors {
+            right: parent.right
+            top: parent.top
+        }
+    }
+
+    Text {
+        text: "" + root.totalUnread
+        font.pointSize: 6
+        color: "White"
+        anchors.centerIn: circle
+        visible: circle.visible
+    }
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
         onClicked: plasmoid.expanded = !plasmoid.expanded
+        hoverEnabled: true
     }
 }
 
