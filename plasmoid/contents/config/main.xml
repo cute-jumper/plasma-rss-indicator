@@ -11,7 +11,8 @@
         </entry>
         <entry name="urls" type="String">
           <default>https://dot.kde.org/rss.xml
-http://mashable.com/rss</default>
+http://mashable.com/rss
+http://news.ycombinator.com/rss</default>
         </entry>
     </group>
         

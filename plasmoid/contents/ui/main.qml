@@ -14,6 +14,8 @@ Item {
     property string appletIcon: "rssindicator.png"
     property int totalUnread: 0
 
+    Plasmoid.icon: plasmoid.file("ui", appletIcon);
+
     /* Plasmoid.fullRepresentation: FullRepresentationMock { } */
     Plasmoid.compactRepresentation: CompactRepresentation { }
     Plasmoid.fullRepresentation: FullRepresentation { }
@@ -28,8 +30,8 @@ Item {
         var service = notificationSource.serviceForSource("notification");
         var operation = service.operationDescription("createNotification");
 
-        operation.appName = root.appName
-        operation["appIcon"] = root.appletIcon
+        operation.appName = root.appName;
+        operation["appIcon"] = plasmoid.icon;
         operation.summary = title;
         operation["body"] = text;
         // TODO
