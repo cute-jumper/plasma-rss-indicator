@@ -102,10 +102,10 @@ PlasmaComponents.ListItem {
                 for (var i = 0; i < added.length; i++) {
                     text += added[i].title + "\n";
                 }
-                fullRep.createNotification(info.title, text);
+                root.createNotification(info.title, text);
             } else {
                 // FIXME
-                fullRep.createNotification(info.title, "No updates");
+                root.createNotification(info.title, "No new items");
             }
         });
     }

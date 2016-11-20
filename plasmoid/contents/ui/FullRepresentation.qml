@@ -184,24 +184,4 @@ Item {
             }
         }
     }
-
-    PlasmaCore.DataSource {
-        id: notificationSource
-        engine: "notifications"
-        connectedSources: "org.freedesktop.Notifications"
-    }
-
-    function createNotification(title, text) {
-        var service = notificationSource.serviceForSource("notification");
-        var operation = service.operationDescription("createNotification");
-
-        operation.appName = root.appName
-        operation["appIcon"] = root.appletIcon
-        operation.summary = title;
-        operation["body"] = text;
-        // TODO
-        operation["timeout"] = 2000;
-
-        service.startOperationCall(operation);
-    }
 }
