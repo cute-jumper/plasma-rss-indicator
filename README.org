@@ -14,15 +14,19 @@ desktop integration and more consistent look-and-feel.
     the item as read and right click to view it in your favorite browser.
 
   The overview of all the subscribed feeds:
+
   [[./screenshots/full.png]]
 
   Notifications when new items come:
+
   [[./screenshots/notification.png]]
 
   Show the detail of an item when hovered by the mouse:
+
   [[./screenshots/list.png]]
 
   Easy to config:
+
   [[./screenshots/config.png]]
 
 * Installation
