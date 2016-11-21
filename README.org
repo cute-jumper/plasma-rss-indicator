@@ -1,0 +1,37 @@
+#+TITLE: plasma-rss-indicator
+
+RSS indicator for Plasma 5.
+
+Inspired by [[https://github.com/nicolas-raoul/Feedindicator/][feedindicator]], this widget is tailored for Plasma 5 with better
+desktop integration and more consistent look-and-feel.
+
+* Features:
+  - Send notifications when new feed items come
+  - View the unread count/mark all items as read/check updates for a particular
+    feed
+  - View the total unread in the panel icon
+  - View the details of an item when hovered by the mouse. Left click to mark
+    the item as read and right click to view it in your favorite browser.
+
+  The overview of all the subscribed feeds:
+  [[./screenshots/full.png]]
+
+  Notifications when new items come:
+  [[./screenshots/notification.png]]
+
+  Show the detail of an item when hovered by the mouse:
+  [[./screenshots/list.png]]
+
+  Easy to config:
+  [[./screenshots/config.png]]
+
+* Installation
+  : git clone https://github.com/cute-jumper/plasma-rss-indicator.git
+  : cd plasma-rss-indicator
+  : plasmapkg2 --install plasmoid
+
+* License
+  GPLv3
+
+* Contribution
+  Pull requests are always welcome!
