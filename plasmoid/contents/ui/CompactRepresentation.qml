@@ -46,4 +46,3 @@ Item {
         hoverEnabled: true
     }
 }
-

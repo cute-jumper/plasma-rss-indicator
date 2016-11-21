@@ -13,6 +13,7 @@ Item {
     property int leftColumnWidth: iconSize + Math.round(units.gridUnit / 2)
     property string appletIcon: "rssindicator.png"
     property int totalUnread: 0
+    property int notificationTimeout: 10000
 
     Plasmoid.icon: plasmoid.file("ui", appletIcon);
 
@@ -34,7 +35,7 @@ Item {
         operation.summary = title;
         operation["body"] = text;
         // TODO: is this useful?
-        operation["timeout"] = 10000;
+        operation["timeout"] = notificationTimeout;
 
         service.startOperationCall(operation);
     }

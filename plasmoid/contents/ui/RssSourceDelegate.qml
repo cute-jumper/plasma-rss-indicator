@@ -18,6 +18,7 @@ PlasmaComponents.ListItem {
 
     property int currentIndex: index
     property string table: "[" + rssUrl + "]"
+    property bool timerStart: false
 
     height: root.iconSize + Math.round(units.gridUnit / 2)
 
@@ -86,7 +87,7 @@ PlasmaComponents.ListItem {
     Timer {
         id: refreshTimer
         interval: fullRep.refresh
-        running: !plasmoid.userConfiguring
+        running: timerStart && !plasmoid.userConfiguring
         repeat: true
         onTriggered: { refreshFeeds(false); }
     }
@@ -183,6 +184,17 @@ PlasmaComponents.ListItem {
     // -1 is to make sure the rssSourceName.text can be updated when unread -> 0
     property int unread: -1
 
+    Timer {
+        id: timerStarter
+        running: false
+        repeat: false
+        interval: currentIndex * root.notificationTimeout
+        onTriggered: {
+            timerStart = true;
+            console.log("Start timer at " + currentIndex);
+        }
+    }
+
     property variant info
     Component.onCompleted: {
         requestFeedsUpdate(function (xml) {
@@ -199,6 +211,8 @@ PlasmaComponents.ListItem {
             updateUIByItems(items);
             // feedListModel is complete now
             feedList.model = feedListModel;
+            // start Timer
+            timerStarter.running = true;
         });
     }
 
