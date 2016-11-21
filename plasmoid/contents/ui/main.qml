@@ -25,7 +25,7 @@ Item {
         connectedSources: "org.freedesktop.Notifications"
     }
 
-    function createNotification(title, text) {
+    function createNotification(title, text, icon) {
         var service = notificationSource.serviceForSource("notification");
         var operation = service.operationDescription("createNotification");
 

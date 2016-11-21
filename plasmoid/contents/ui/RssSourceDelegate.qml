@@ -79,7 +79,7 @@ PlasmaComponents.ListItem {
         visible: opacity != 0 && !rssListPanel.activeRss
 
         onClicked: {
-            refreshFeeds();
+            refreshFeeds(true);
         }
     }
 
@@ -88,10 +88,10 @@ PlasmaComponents.ListItem {
         interval: fullRep.refresh
         running: !plasmoid.userConfiguring
         repeat: true
-        onTriggered: { refreshFeeds(); }
+        onTriggered: { refreshFeeds(false); }
     }
 
-    function refreshFeeds() {
+    function refreshFeeds(force) {
         requestFeedsUpdate(function (xml) {
             var channel = getFeedChannel(xml);
             var items = getFeedItemsFromChannel(channel);
@@ -102,10 +102,9 @@ PlasmaComponents.ListItem {
                 for (var i = 0; i < added.length; i++) {
                     text += added[i].title + "\n";
                 }
-                root.createNotification(info.title, text);
-            } else {
-                // FIXME
-                root.createNotification(info.title, "No new items");
+                root.createNotification(info.title, text, rssSourceIcon.source);
+            } else if (force) {
+                root.createNotification(info.title, "No new items", rssSourceIcon.source);
             }
         });
     }
