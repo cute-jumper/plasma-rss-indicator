@@ -15,19 +15,19 @@ desktop integration and more consistent look-and-feel.
 
   The overview of all the subscribed feeds:
 
-  [[./screenshots/full.png]]
+  @@html:<img src="./screenshots/full.png" width="30%"/>@@
 
   Notifications when new items come:
 
-  [[./screenshots/notification.png]]
+  @@html:<img src="./screenshots/notification.png" width="40%"/>@@
 
   Show the detail of an item when hovered by the mouse:
 
-  [[./screenshots/list.png]]
+  @@html:<img src="./screenshots/list.png" width="50%"/>@@
 
   Easy to config:
 
-  [[./screenshots/config.png]]
+  @@html:<img src="./screenshots/config.png" width="40%"/>@@
 
 * Installation
   : git clone https://github.com/cute-jumper/plasma-rss-indicator.git
