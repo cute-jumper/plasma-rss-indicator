@@ -13,9 +13,9 @@ desktop integration and more consistent look-and-feel.
   - View the details of an item when hovered by the mouse. Left click to mark
     the item as read and right click to view it in your favorite browser.
 
-  The overview of all the subscribed feeds:
+  The overview of all the subscribed feeds (total unread in the panel icon):
 
-  @@html:<img src="./screenshots/full.png" width="30%"/>@@
+  @@html:<img src="./screenshots/full.png" width="40%"/>@@
 
   Notifications when new items come:
 
