@@ -220,10 +220,12 @@ PlasmaComponents.ListItem {
         var oldUnread = unread;
         unread = f(unread);
         if (oldUnread != unread) {
-            root.totalUnread += unread;
+            var newTotalUnread = root.totalUnread;
+            newTotalUnread += unread;
             if (oldUnread != -1) {
-                root.totalUnread -= oldUnread;
+                newTotalUnread -= oldUnread;
             }
+            root.totalUnread = newTotalUnread;
             console.log("totalUnread: " + root.totalUnread);
         }
     }
@@ -254,6 +256,13 @@ PlasmaComponents.ListItem {
                 added.push(items[i]);
             }
         }
+        var newReadEntries = [];
+        for (var i = 0; i < allEntries.length; i++) {
+            if (readEntries.indexOf(allEntries[i]) != -1) {
+                newReadEntries.push(allEntries[i]);
+            }
+        }
+        readEntries = newReadEntries;
         changeUnread(function (_) { return allEntries.length - readEntries.length; });
         return added;
     }
