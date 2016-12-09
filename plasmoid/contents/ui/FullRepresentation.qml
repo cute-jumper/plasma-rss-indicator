@@ -12,9 +12,10 @@ import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
 Item {
     id: fullRep
 
-    property bool sourceClick: false
     property alias heading: heading
     property int refresh: plasmoid.configuration.refresh * 1000
+
+    property alias activeRss: rssListPanel.activeRss
 
     Layout.minimumWidth: units.gridUnit * 12
     Layout.minimumHeight: units.gridUnit * 14
@@ -29,13 +30,13 @@ Item {
             left: parent.left
             top: parent.top
             right: parent.right
-            leftMargin: units.smallSpacing
+            leftMargin: activeRss ? root.leftColumnWidth : units.smallSpacing
         }
 
         height: paintedHeight
 
-        horizontalAlignment: Text.AlignLeft
-        text: "RSS Indicator"
+        horizontalAlignment: activeRss ? Text.AlignHCenter : Text.AlignLeft
+        text: activeRss ? activeRss.sourceName : "RSS Indicator"
     }
 
     PlasmaCore.SvgItem {
@@ -48,7 +49,7 @@ Item {
             margins: -units.gridUnit
         }
 
-        visible: false
+        visible: activeRss != null
         width: lineSvg.elementSize("vertical-line").width
 
         elementId: "vertical-line"
@@ -67,9 +68,10 @@ Item {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
+            rightMargin: activeRss ? rssListPanel.width : 0
         }
         CurrentItemHighLight {
-            target: rssListPanel.activeRss
+            target: activeRss
             location: PlasmaCore.Types.LeftEdge
         }
 

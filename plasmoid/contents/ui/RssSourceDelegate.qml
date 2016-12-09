@@ -19,6 +19,7 @@ PlasmaComponents.ListItem {
     property int currentIndex: index
     property string table: "[" + rssUrl + "]"
     property bool timerStart: false
+    property alias sourceName: rssSourceName.text
 
     height: root.iconSize + Math.round(units.gridUnit / 2)
 
@@ -144,23 +145,11 @@ PlasmaComponents.ListItem {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: {
             if (mouse.button == Qt.LeftButton){
-                if (fullRep.sourceClick &&
+                if (rssListPanel.activeRss != null &&
                     currentIndex == rssListPanel.activeRss.currentIndex) {
                     rssListPanel.activeRss = null;
-                    rssSourceScroll.anchors.rightMargin = 0;
-                    separator.visible = false;
-                    heading.text = "RSS Indicator";
-                    heading.horizontalAlignment = Text.AlignLeft;
-                    heading.anchors.leftMargin = units.smallSpacing;
-                    fullRep.sourceClick = false;
                 } else {
                     rssListPanel.activeRss = listItem;
-                    rssSourceScroll.anchors.rightMargin = rssListPanel.width;
-                    separator.visible = true;
-                    heading.text = rssSourceName.text;
-                    heading.horizontalAlignment = Text.AlignHCenter;
-                    heading.anchors.leftMargin = root.leftColumnWidth;
-                    fullRep.sourceClick = true;
                 }
             } else if (mouse.button == Qt.RightButton) {
                 if (info.link) {
