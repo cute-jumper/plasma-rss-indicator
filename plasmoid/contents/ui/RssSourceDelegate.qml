@@ -177,7 +177,7 @@ PlasmaComponents.ListItem {
         id: timerStarter
         running: false
         repeat: false
-        interval: currentIndex * root.notificationTimeout
+        interval: currentIndex * (root.notificationTimeout + root.notificationGap)
         onTriggered: {
             timerStart = true;
             console.log("Start timer at " + currentIndex);

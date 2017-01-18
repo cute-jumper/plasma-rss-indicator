@@ -14,6 +14,7 @@ Item {
     property string appletIcon: "rssindicator.png"
     property int totalUnread: 0
     property int notificationTimeout: 10000
+    property int notificationGap: 2000
 
     Plasmoid.icon: plasmoid.file("ui", appletIcon);
 
