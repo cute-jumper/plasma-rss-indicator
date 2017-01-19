@@ -258,9 +258,6 @@ PlasmaComponents.ListItem {
 
     function markEntryAsRead(sig) {
         changeUnread(function (x) {return x - 1;});
-        if (rssListPanel.activeRss) {
-            heading.text = rssSourceName.text;
-        }
         // FIXME update cache and db
         readEntries.push(sig);
         insertReadEntryIntoDB(sig);
