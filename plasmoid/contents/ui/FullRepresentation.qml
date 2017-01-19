@@ -106,20 +106,15 @@ Item {
             var oldUrl = rssSourceModel.get(oldIndex).rssUrl;
             if (oldUrl != urls[newIndex]) {
                 rssSourceModel.insert(oldIndex, {rssUrl: urls[newIndex]});
-                console.log("inserting... " + rssSourceModel.get(oldIndex).rssUrl);
             }
             oldIndex++;
             newIndex++;
         }
-        console.log("oldIndex: " + oldIndex + " and model count: " + rssSourceModel.count);
-        console.log("newIndex: " + newIndex + " and urls.length: " + urls.length);
         while (oldIndex < rssSourceModel.count) {
-            console.log("Removing... " + rssSourceModel.get(oldIndex).rssUrl);
             rssSourceModel.remove(oldIndex);
         }
         while (newIndex < urls.length) {
             rssSourceModel.append({rssUrl: urls[newIndex]});
-            console.log("Adding... " + rssSourceModel.get(newIndex).rssUrl);
             newIndex++;
         }
     }

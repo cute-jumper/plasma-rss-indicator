@@ -101,7 +101,6 @@ PlasmaComponents.ListItem {
             var channel = getFeedChannel(xml);
             var items = getFeedItemsFromChannel(channel);
             var added = updateUIByItems(items);
-            console.log("After update: " + added.length + " item(s) added.");
             if (added.length > 0) {
                 var text = "";
                 for (var i = 0; i < added.length; i++) {
@@ -183,7 +182,6 @@ PlasmaComponents.ListItem {
         interval: currentIndex * (root.notificationTimeout + root.notificationGap)
         onTriggered: {
             timerStart = true;
-            console.log("Start timer at " + currentIndex);
         }
     }
 
@@ -192,7 +190,6 @@ PlasmaComponents.ListItem {
         requestFeedsUpdate(function (xml) {
             // init readEntries
             readEntries = getReadEntriesFromDB();
-            console.log(table + ": " + readEntries);
             var channel = getFeedChannel(xml);
             // init info, tooltip
             info = getFeedInfoFromChannel(channel);
@@ -218,7 +215,6 @@ PlasmaComponents.ListItem {
                 newTotalUnread -= oldUnread;
             }
             root.totalUnread = newTotalUnread;
-            console.log("totalUnread: " + root.totalUnread);
         }
     }
 
@@ -307,7 +303,6 @@ PlasmaComponents.ListItem {
     }
 
     function getBaseUrl(url) {
-        console.log("[getBaseUrl] " + url);
         if (!url.match("^http")) {
             url = "http://" + url;
         }
