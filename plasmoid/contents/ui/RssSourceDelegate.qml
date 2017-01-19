@@ -245,6 +245,12 @@ PlasmaComponents.ListItem {
                 added.push(items[i]);
             }
         }
+        if (allEntries.length > fullRep.maxItems) {
+            //Remove old entries
+            var removeCount = allEntries.length - fullRep.maxItems;
+            allEntries.splice(0, removeCount);
+            feedListModel.remove(0, removeCount);
+        }
         var newReadEntries = [];
         for (var i = 0; i < allEntries.length; i++) {
             if (readEntries.indexOf(allEntries[i]) != -1) {

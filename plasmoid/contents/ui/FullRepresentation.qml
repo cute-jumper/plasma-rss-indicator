@@ -14,6 +14,7 @@ Item {
 
     property alias heading: heading
     property int refresh: plasmoid.configuration.refresh * 1000
+    property int maxItems: 99 //TODO: configurable
 
     property alias activeRss: rssListPanel.activeRss
 
