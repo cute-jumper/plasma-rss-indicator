@@ -252,6 +252,7 @@ PlasmaComponents.ListItem {
             }
         }
         readEntries = newReadEntries;
+        updateAllEntries(readEntries);
         changeUnread(function (_) { return allEntries.length - readEntries.length; });
         return added;
     }
