@@ -117,18 +117,31 @@ Item {
             rssSourceModel.append({rssUrl: urls[newIndex]});
             newIndex++;
         }
+        cleanUpTables();
     }
 
     property variant db
     Component.onCompleted: {
-        db = LocalStorage.openDatabaseSync("RssIndicatorDB", root.version, "SQLite for RssIndicator", 100);
-        cleanUpTables();
+        initializeDb();
     }
 
-
+    function initializeDb() {
+        if (!db) {
+            db = LocalStorage.openDatabaseSync("RssIndicatorDB", root.version, "SQLite for RssIndicator", 100);
+        }
+    }
 
     function cleanUpTables() {
-        //TODO
+        initializeDb();
+        db.transaction(function (tx) {
+            var rs = tx.executeSql("SELECT name FROM sqlite_master WHERE type=\"table\"");
+            for (var i = 0; i < rs.rows.length; i++) {
+                var tableName = rs.rows.item(i).name;
+                if (urls.indexOf(tableName) == -1) {
+                    tx.executeSql("DROP TABLE IF EXISTS [" + tableName + "]");
+                }
+            }
+        })
     }
 
     StackView {
