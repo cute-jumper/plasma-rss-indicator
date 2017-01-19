@@ -25,6 +25,9 @@ PlasmaComponents.ListItem {
 
     PlasmaCore.ToolTipArea {
         id: tooltip
+
+        active: plasmoid.configuration.sourceTooltip
+
         anchors.fill: parent
         Image {
             id: rssSourceIcon

@@ -41,6 +41,8 @@ Item {
             PlasmaCore.ToolTipArea {
                 id: feedTitle
 
+                active: plasmoid.configuration.itemTooltip
+
                 property alias fontWeight: feedTitleText.font.weight
                 anchors.fill: parent
 
