@@ -2,6 +2,8 @@
 
 RSS indicator for Plasma 5.
 
+KDE Store link: https://store.kde.org/p/1168615/
+
 Inspired by [[https://github.com/nicolas-raoul/Feedindicator/][feedindicator]], this widget is tailored for Plasma 5 with better
 desktop integration and more consistent look-and-feel.
 
@@ -30,9 +32,13 @@ desktop integration and more consistent look-and-feel.
   @@html:<img src="./screenshots/config.png" width="40%"/>@@
 
 * Installation
+  Manually:
   : git clone https://github.com/cute-jumper/plasma-rss-indicator.git
   : cd plasma-rss-indicator
   : plasmapkg2 --install plasmoid
+
+  Or, you can install directly using the "Add Widget" by right-clicking your
+  Plasma Desktop. It is on KDE store already: https://store.kde.org/p/1168615/.
 
 * License
   GPLv3
