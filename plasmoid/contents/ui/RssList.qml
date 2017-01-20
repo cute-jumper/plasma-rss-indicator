@@ -59,6 +59,7 @@ Item {
                         leftMargin: units.smallSpacing
                         verticalCenter: parent.verticalCenter
                     }
+                    color: theme.textColor
                     wrapMode: Text.WordWrap
                     font {
                         /*     pointSize: Math.max(10, theme.smallestFont.pointSize) */
