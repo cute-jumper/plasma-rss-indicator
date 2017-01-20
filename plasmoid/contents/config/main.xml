@@ -15,6 +15,9 @@
     <entry name="maxItems" type="Int">
       <default>99</default>
     </entry>
+    <entry name="notifications" type="Bool">
+      <default>true</default>
+    </entry>
     <entry name="sourceTooltip" type="Bool">
       <default>true</default>
     </entry>

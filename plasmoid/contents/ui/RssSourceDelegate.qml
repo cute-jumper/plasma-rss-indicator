@@ -101,7 +101,7 @@ PlasmaComponents.ListItem {
             var channel = getFeedChannel(xml);
             var items = getFeedItemsFromChannel(channel);
             var added = updateUIByItems(items);
-            if (added.length > 0) {
+            if (plasmoid.configuration.notifications && added.length > 0) {
                 var text = "";
                 for (var i = 0; i < added.length; i++) {
                     text += added[i].title + "\n";

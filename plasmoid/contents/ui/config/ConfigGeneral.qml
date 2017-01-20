@@ -8,6 +8,7 @@ Item {
     property alias cfg_refresh: refresh.value
     property alias cfg_urls: urls.text
     property alias cfg_maxItems: maxItems.value
+    property alias cfg_notifications: notifications.checked
     property alias cfg_sourceTooltip: sourceTooltip.checked
     property alias cfg_itemTooltip: itemTooltip.checked
 
@@ -61,6 +62,11 @@ Item {
             topMargin: Math.round(units.gridUnit / 3)
         }
         spacing: 10
+
+        CheckBox {
+            id: notifications
+            text: i18n("Send notifications when new feed items come")
+        }
 
         CheckBox {
             id: sourceTooltip
