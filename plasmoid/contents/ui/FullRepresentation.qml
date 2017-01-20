@@ -64,6 +64,8 @@ Item {
     PlasmaExtras.ScrollArea {
         id: rssSourceScroll
 
+        verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
         anchors {
             top: heading.bottom
             left: parent.left
