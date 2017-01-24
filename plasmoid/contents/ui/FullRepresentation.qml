@@ -159,16 +159,13 @@ Item {
 
         property Item activeRss
 
-        property Item currentItem
-
         Item {
             id: emptyPage
         }
 
         onActiveRssChanged: {
             if (activeRss != null) {
-                currentItem = activeRss.feedList;
-                rssListPanel.replace({item: currentItem});
+                rssListPanel.replace({item: activeRss.feedList});
             } else {
                 rssListPanel.replace({item: emptyPage, immediate: true});
             }
