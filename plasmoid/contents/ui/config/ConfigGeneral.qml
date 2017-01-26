@@ -22,7 +22,8 @@ Item {
         columns: 2
 
         Text {
-            text: "Refresh time (seconds)"
+            text: i18n("Refresh time (seconds)")
+            color: theme.textColor
         }
         SpinBox {
             id: refresh
@@ -33,8 +34,9 @@ Item {
         }
 
         Text {
-            text: "URLs (one per line)"
+            text: i18n("URLs (one per line)")
             Layout.alignment: Qt.AlignTop
+            color: theme.textColor
         }
         TextArea {
             Layout.fillWidth: true
@@ -43,8 +45,9 @@ Item {
         }
 
         Text {
-            text: "Number of items to show"
+            text: i18n("Number of items to show")
             Layout.alignment: Qt.AlignTop
+            color: theme.textColor
         }
         SpinBox {
             id: maxItems
