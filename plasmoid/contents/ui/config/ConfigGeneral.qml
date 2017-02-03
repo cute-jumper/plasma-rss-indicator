@@ -11,6 +11,12 @@ Item {
     property alias cfg_notifications: notifications.checked
     property alias cfg_sourceTooltip: sourceTooltip.checked
     property alias cfg_itemTooltip: itemTooltip.checked
+    property alias cfg_leftClickMark: leftClickMark.checked
+    property alias cfg_leftClickOpen: leftClickOpen.checked
+    property alias cfg_leftClickNone: leftClickNone.checked
+    property alias cfg_rightClickMark: rightClickMark.checked
+    property alias cfg_rightClickOpen: rightClickOpen.checked
+    property alias cfg_rightClickNone: rightClickNone.checked
 
 
     GridLayout {
@@ -59,6 +65,7 @@ Item {
     }
 
     Column {
+        id: checkboxGroup
         Layout.fillWidth: true
         anchors {
             top: firstGrid.bottom
@@ -80,6 +87,66 @@ Item {
             id: itemTooltip
             text: i18n("Show tooltip when hovering over an item")
         }
+    }
 
+    Column {
+        Layout.fillWidth: true
+        anchors {
+            top: checkboxGroup.bottom
+            topMargin: Math.round(units.gridUnit / 3)
+        }
+
+        Text {
+            text: i18n("Mouse Behaviors")
+        }
+
+        /* title: i18n("Mouse Behaviors") */
+
+        GridLayout {
+            rowSpacing: 10
+            columnSpacing: 10
+            columns: 4
+
+            Text {
+                text: "Left click "
+            }
+            ExclusiveGroup { id: leftClickGroup }
+            RadioButton {
+                id: leftClickMark
+                text: "Mark as read"
+                exclusiveGroup: leftClickGroup
+            }
+            RadioButton {
+                id: leftClickOpen
+                text: "Open URL"
+                exclusiveGroup: leftClickGroup
+            }
+            RadioButton {
+                id: leftClickNone
+                text: "None"
+                exclusiveGroup: leftClickGroup
+            }
+
+            Text {
+                text: "Right click "
+            }
+            ExclusiveGroup { id: rightClickGroup }
+            RadioButton {
+                id: rightClickMark
+                text: "Mark as read"
+                exclusiveGroup: rightClickGroup
+            }
+            RadioButton {
+                id: rightClickOpen
+                text: "Open URL"
+                exclusiveGroup: rightClickGroup
+            }
+            RadioButton {
+                id: rightClickNone
+                text: "None"
+                exclusiveGroup: rightClickGroup
+            }
+
+        }
     }
 }

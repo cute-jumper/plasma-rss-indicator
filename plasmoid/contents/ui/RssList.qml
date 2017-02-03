@@ -71,14 +71,41 @@ Item {
                 id: mouseArea
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                property int leftButtonBehavior
+                property int rightButtonBehavior
+
+                Component.onCompleted: {
+                    leftButtonBehavior = Qt.binding(function () {
+                        if (plasmoid.configuration.leftClickMark)
+                            return 1; // mark as read
+                        else if (plasmoid.configuration.leftClickOpen)
+                            return 2; // open url
+                        return 0;
+                    });
+                    rightButtonBehavior = Qt.binding(function () {
+                        if (plasmoid.configuration.rightClickMark)
+                            return 1; // mark as read
+                        else if (plasmoid.configuration.rightClickOpen)
+                            return 2; // open url
+                        return 0;
+                    });
+                }
+
                 onClicked: {
                     if (mouse.button == Qt.LeftButton) {
-                        if (!read) {
+                        if (leftButtonBehavior > 0 && !read) {
                             read = true;
+                            if (leftButtonBehavior == 2 && link) {
+                                Qt.openUrlExternally(link);
+                            }
                         }
                     } else if (mouse.button == Qt.RightButton) {
-                        if (link) {
-                            Qt.openUrlExternally(link);
+                        if (rightButtonBehavior > 0 && !read) {
+                            read = true;
+                            if (rightButtonBehavior == 2 && link) {
+                                Qt.openUrlExternally(link);
+                            }
                         }
                     }
                 }

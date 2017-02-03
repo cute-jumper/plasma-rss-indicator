@@ -24,6 +24,23 @@
     <entry name="itemTooltip" type="Bool">
       <default>true</default>
     </entry>
+    <entry name="leftClickMark" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="leftClickOpen" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="leftClickNone" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="rightClickMark" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="rightClickOpen" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="rightClickNone" type="Bool">
+      <default>false</default>
+    </entry>
   </group>
-
 </kcfg>
