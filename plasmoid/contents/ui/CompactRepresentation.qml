@@ -17,6 +17,10 @@ Item {
 
     }
 
+    FullRepresentation {
+        visible: false
+    }
+
     Rectangle {
         id: circle
         width: 20
