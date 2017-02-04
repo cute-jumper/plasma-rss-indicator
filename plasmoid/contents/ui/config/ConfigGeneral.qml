@@ -89,21 +89,17 @@ Item {
         }
     }
 
-    Column {
+    GroupBox {
         Layout.fillWidth: true
         anchors {
             top: checkboxGroup.bottom
             topMargin: Math.round(units.gridUnit / 3)
         }
 
-        Text {
-            text: i18n("Mouse Behaviors")
-        }
-
-        /* title: i18n("Mouse Behaviors") */
+        title: i18n("Mouse Behaviors")
 
         GridLayout {
-            rowSpacing: 10
+            rowSpacing: 5
             columnSpacing: 10
             columns: 4
 
