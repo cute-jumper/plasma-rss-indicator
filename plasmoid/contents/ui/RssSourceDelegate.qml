@@ -187,6 +187,7 @@ PlasmaComponents.ListItem {
 
     property variant info
     Component.onCompleted: {
+        root.totalUnread = 0;
         requestFeedsUpdate(function (xml) {
             // init readEntries
             readEntries = getReadEntriesFromDB();

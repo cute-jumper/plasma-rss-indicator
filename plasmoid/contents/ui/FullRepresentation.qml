@@ -12,6 +12,9 @@ import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
 Item {
     id: fullRep
 
+    property bool discard: false
+    property alias listModel: rssSourceList.model
+
     property alias heading: heading
     property int refresh: plasmoid.configuration.refresh * 1000
     property int maxItems: plasmoid.configuration.maxItems

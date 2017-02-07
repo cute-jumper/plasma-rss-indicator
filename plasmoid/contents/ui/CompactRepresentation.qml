@@ -17,10 +17,6 @@ Item {
 
     }
 
-    FullRepresentation {
-        visible: false
-    }
-
     Rectangle {
         id: circle
         width: 20
@@ -46,7 +42,18 @@ Item {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        onClicked: plasmoid.expanded = !plasmoid.expanded
+        onClicked: {
+            if (!fakeFullRepresentation.discard) {
+                fakeFullRepresentation.discard = true;
+                fakeFullRepresentation.listModel.clear();
+            }
+            plasmoid.expanded = !plasmoid.expanded;
+        }
         hoverEnabled: true
+    }
+
+    FullRepresentation {
+        id: fakeFullRepresentation
+        visible: false
     }
 }
