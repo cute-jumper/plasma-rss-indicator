@@ -100,7 +100,7 @@ PlasmaComponents.ListItem {
         requestFeedsUpdate(function (xml) {
             var channel = getFeedChannel(xml);
             var items = getFeedItemsFromChannel(channel);
-            var added = updateUIByItems(items);
+            var added = updateModelByItems(items);
             if (plasmoid.configuration.notifications && added.length > 0) {
                 var text = "";
                 for (var i = 0; i < added.length; i++) {
@@ -197,7 +197,7 @@ PlasmaComponents.ListItem {
             tooltip.subText = info.description ? info.description : "";
             // update UI
             var items = getFeedItemsFromChannel(channel);
-            updateUIByItems(items);
+            updateModelByItems(items);
             // feedListModel is complete now
             feedList.model = feedListModel;
             // start Timer
@@ -229,7 +229,7 @@ PlasmaComponents.ListItem {
         req.send();
     }
 
-    function updateUIByItems(items) {
+    function updateModelByItems(items) {
         var added = [];
         for (var i = 0; i < items.length; i++) {
             var sig = Qt.md5(items[i].title);
