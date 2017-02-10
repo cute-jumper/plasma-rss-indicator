@@ -55,7 +55,7 @@ PlasmaComponents.ListItem {
 
             text: {
                 if (info && info.title) {
-                    return (info.title) + " (" + unread + "/" + allEntries.length + ")";
+                    return (info.title) + " (" + unread + "/" + total + ")";
                 } else {
                     return "";
                 }
@@ -138,6 +138,7 @@ PlasmaComponents.ListItem {
                 // update cache and db
                 readEntries = allEntries;
                 updateAllEntries(allEntries);
+                total = allEntries.length;
             }
         }
     }
@@ -172,6 +173,7 @@ PlasmaComponents.ListItem {
 
     property variant readEntries
     property variant allEntries: []
+    property int total: 0
     // -1 is to make sure the rssSourceName.text can be updated when unread -> 0
     property int unread: -1
 
@@ -260,6 +262,7 @@ PlasmaComponents.ListItem {
         readEntries = newReadEntries;
         updateAllEntries(readEntries);
         changeUnread(function (_) { return allEntries.length - readEntries.length; });
+        total = allEntries.length;
         return added;
     }
 
@@ -364,4 +367,19 @@ PlasmaComponents.ListItem {
         return items;
     }
 
+    function removeReadItems() {
+        for (var i = feedList.model.count - 1; i >= 0; i--) {
+            var item = feedList.model.get(i);
+            if (item.read) {
+                var index = allEntries.indexOf(item.sig);
+                if (index != -1) {
+                    allEntries.splice(index, 1);
+                }
+                feedList.model.remove(i);
+            }
+        }
+        readEntries = [];
+        updateAllEntries(readEntries);
+        total = allEntries.length;
+    }
 }

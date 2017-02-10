@@ -28,15 +28,6 @@ Item {
             height: root.iconSize + Math.round(units.gridUnit / 2)
             width: parent.width
 
-            property bool read: model.read
-
-            Component.onCompleted: {
-                rssItem.onReadChanged.connect(function() {
-                    if (read && !bulkChangeRead) {
-                        listItem.markEntryAsRead(sig);
-                    }
-                });
-            }
 
             PlasmaCore.ToolTipArea {
                 id: feedTitle
@@ -62,7 +53,7 @@ Item {
                     color: theme.textColor
                     wrapMode: Text.WordWrap
                     font {
-                        /*     pointSize: Math.max(10, theme.smallestFont.pointSize) */
+                        /*  pointSize: Math.max(10, theme.smallestFont.pointSize) */
                         weight: read ? Font.Normal : Font.Bold
                     }
                 }
@@ -102,6 +93,7 @@ Item {
                     if (behavior > 0) {
                         if (!read) {
                             read = true;
+                            listItem.markEntryAsRead(sig);
                         }
                         if (behavior == 2 && link) {
                             Qt.openUrlExternally(link);

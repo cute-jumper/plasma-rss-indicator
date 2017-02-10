@@ -34,13 +34,34 @@ Item {
             left: parent.left
             top: parent.top
             right: parent.right
-            leftMargin: activeRss ? root.leftColumnWidth : units.smallSpacing
+            leftMargin: activeRss ? root.leftColumnWidth + units.smallSpacing : units.smallSpacing
+            rightMargin: activeRss ? root.leftColumnWidth : units.smallSpacing
         }
 
         height: paintedHeight
 
-        horizontalAlignment: activeRss ? Text.AlignHCenter : Text.AlignLeft
+        horizontalAlignment: Text.AlignLeft
         text: activeRss ? activeRss.sourceName : "RSS Indicator"
+    }
+
+    PlasmaComponents.ToolButton {
+        id: removeReadItemsButton
+
+        anchors {
+            right: parent.right
+            top: parent.top
+        }
+
+        visible: activeRss != null
+
+        iconSource: "list-remove"
+        tooltip: i18n("Remove read items")
+
+        onClicked: {
+            if (activeRss != null) {
+                activeRss.removeReadItems();
+            }
+        }
     }
 
     PlasmaCore.SvgItem {
