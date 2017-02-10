@@ -93,19 +93,18 @@ Item {
                 }
 
                 onClicked: {
+                    var behavior = -1;
                     if (mouse.button == Qt.LeftButton) {
-                        if (leftButtonBehavior > 0 && !read) {
-                            read = true;
-                            if (leftButtonBehavior == 2 && link) {
-                                Qt.openUrlExternally(link);
-                            }
-                        }
+                        behavior = leftButtonBehavior;
                     } else if (mouse.button == Qt.RightButton) {
-                        if (rightButtonBehavior > 0 && !read) {
+                        behavior = rightButtonBehavior;
+                    }
+                    if (behavior > 0) {
+                        if (!read) {
                             read = true;
-                            if (rightButtonBehavior == 2 && link) {
-                                Qt.openUrlExternally(link);
-                            }
+                        }
+                        if (behavior == 2 && link) {
+                            Qt.openUrlExternally(link);
                         }
                     }
                 }
