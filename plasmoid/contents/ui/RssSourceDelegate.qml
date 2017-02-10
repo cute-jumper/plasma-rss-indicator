@@ -378,8 +378,6 @@ PlasmaComponents.ListItem {
                 feedList.model.remove(i);
             }
         }
-        readEntries = [];
-        updateAllEntries(readEntries);
         total = allEntries.length;
     }
 }
